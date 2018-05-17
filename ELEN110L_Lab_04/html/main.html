@@ -1,0 +1,340 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ELEN110L - Lab4: Fourier Series</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-03"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>ELEN110L - Lab4: Fourier Series</h1><!--introduction--><p>Thomas Heckman, Fernando Guerra 5/3/18</p><p>The goal of this lab is to gain a futher understanding of Fourier Series and to use our knowledge of manipulating exponentials</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Initial conditions</a></li><li><a href="#2">Square Wave</a></li><li><a href="#3">Triangle Wave</a></li><li><a href="#4">Saw Tooth Wave</a></li></ul></div><h2 id="1">Initial conditions</h2><pre class="codeinput">t = 0 : 0.01 : 8*pi;
+</pre><h2 id="2">Square Wave</h2><pre class="codeinput">figure(1)
+
+<span class="comment">% // n = 3 //</span>
+sqr = 0;                                    <span class="comment">%Initial conditions</span>
+m = 3;
+<span class="keyword">for</span> n=-m:2:m                                <span class="comment">%For loop as infinite sum</span>
+    C = (-1i)*(2)*(1/(pi*n));               <span class="comment">%updating Cn</span>
+    sqr = sqr + C*exp(1i*2*pi*n*t*1/8);     <span class="comment">%summing Cn</span>
+<span class="keyword">end</span>
+subplot(3,1,1)                              <span class="comment">%plotting sum</span>
+hold <span class="string">on</span>
+title(<span class="string">'Square wave n = 3'</span>)
+plot(t,sqr)
+hold <span class="string">off</span>
+
+<span class="comment">% // n = 9 //</span>
+sqr = 0;
+m = 9;
+<span class="keyword">for</span> n=-m:2:m
+    C = (-1i)*(2)*(1/(pi*n));
+    sqr = sqr + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,2)
+hold <span class="string">on</span>
+title(<span class="string">'Square wave n = 9'</span>)
+plot(t,sqr)
+hold <span class="string">off</span>
+
+<span class="comment">% // n = 101 //</span>
+sqr = 0;
+m = 101;
+<span class="keyword">for</span> n=-m:2:m
+    C = (-1i)*(2)*(1/(pi*n));
+    sqr = sqr + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,3)
+hold <span class="string">on</span>
+title(<span class="string">'Square wave n = 101'</span>)
+plot(t,sqr)
+hold <span class="string">off</span>
+</pre><pre class="codeoutput">Warning: Imaginary parts of complex X and/or Y arguments ignored 
+Warning: Imaginary parts of complex X and/or Y arguments ignored 
+Warning: Imaginary parts of complex X and/or Y arguments ignored 
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="3">Triangle Wave</h2><pre class="codeinput">figure(2)
+
+<span class="comment">% // n = 3 //</span>
+tri = 1/2;
+m = 3;
+<span class="keyword">for</span> n=-m:2:m
+    C = (-2)*(1/(pi*n)^2);
+    tri = tri + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,1)
+hold <span class="string">on</span>
+title(<span class="string">'Triangle wave n = 3'</span>)
+plot(t,tri)
+hold <span class="string">off</span>
+
+<span class="comment">% // n = 9 //</span>
+tri = 1/2;
+m = 9;
+<span class="keyword">for</span> n=-m:2:m
+    C = (-2)*(1/(pi*n)^2);
+    tri = tri + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,2)
+hold <span class="string">on</span>
+title(<span class="string">'Triangle wave n = 9'</span>)
+plot(t,tri)
+hold <span class="string">off</span>
+
+<span class="comment">% // n = 101 //</span>
+tri = 1/2;
+m = 101;
+<span class="keyword">for</span> n=-m:2:m
+    C = (-2)*(1/(pi*n)^2);
+    tri = tri + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,3)
+hold <span class="string">on</span>
+title(<span class="string">'Triangle wave n = 101'</span>)
+plot(t,tri)
+hold <span class="string">off</span>
+</pre><pre class="codeoutput">Warning: Imaginary parts of complex X and/or Y arguments ignored 
+Warning: Imaginary parts of complex X and/or Y arguments ignored 
+Warning: Imaginary parts of complex X and/or Y arguments ignored 
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <h2 id="4">Saw Tooth Wave</h2><pre class="codeinput">figure(3)
+
+<span class="comment">% // n = 3 //</span>
+saw = 1/2;
+m = 3;
+<span class="keyword">for</span> n=-m:1:m
+    C = (1i)*(1/(2*pi*n));
+    saw = saw + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,1)
+hold <span class="string">on</span>
+title(<span class="string">'Saw Tooth wave n = 3'</span>)
+plot(t,saw)
+hold <span class="string">off</span>
+
+<span class="comment">% // n = 3 //</span>
+saw = 1/2;
+m = 9;
+<span class="keyword">for</span> n=-m:1:m
+    C = (1i)*(1/(2*pi*n));
+    saw = saw + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,2)
+hold <span class="string">on</span>
+title(<span class="string">'Saw Tooth wave n = 9'</span>)
+plot(t,saw)
+hold <span class="string">off</span>
+
+<span class="comment">% // n = 101 //</span>
+saw = 1/2;
+m = 101;
+<span class="keyword">for</span> n=-m:1:m
+    C = (1i)*(1/(2*pi*n));
+    saw = saw + C*exp(1i*2*pi*n*t*1/8);
+<span class="keyword">end</span>
+subplot(3,1,3)
+hold <span class="string">on</span>
+title(<span class="string">'Saw Tooth wave n = 101'</span>)
+plot(t,saw)
+hold <span class="string">off</span>
+</pre><pre class="codeoutput">Warning: Imaginary parts of complex X and/or Y arguments ignored 
+Warning: Imaginary parts of complex X and/or Y arguments ignored 
+Warning: Imaginary parts of complex X and/or Y arguments ignored 
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ELEN110L - Lab4: Fourier Series
+% Thomas Heckman, Fernando Guerra
+% 5/3/18
+% 
+% The goal of this lab is to gain a futher understanding
+% of Fourier Series and to use our knowledge of manipulating 
+% exponentials
+
+
+%% Initial conditions
+t = 0 : 0.01 : 8*pi;
+
+%% Square Wave
+figure(1)
+
+% // n = 3 //
+sqr = 0;                                    %Initial conditions
+m = 3;                              
+for n=-m:2:m                                %For loop as infinite sum
+    C = (-1i)*(2)*(1/(pi*n));               %updating Cn
+    sqr = sqr + C*exp(1i*2*pi*n*t*1/8);     %summing Cn
+end
+subplot(3,1,1)                              %plotting sum
+hold on
+title('Square wave n = 3')
+plot(t,sqr)
+hold off
+
+% // n = 9 //
+sqr = 0;
+m = 9;
+for n=-m:2:m
+    C = (-1i)*(2)*(1/(pi*n));
+    sqr = sqr + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,2)
+hold on
+title('Square wave n = 9')
+plot(t,sqr)
+hold off
+
+% // n = 101 //
+sqr = 0;
+m = 101;
+for n=-m:2:m
+    C = (-1i)*(2)*(1/(pi*n));
+    sqr = sqr + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,3)
+hold on
+title('Square wave n = 101')
+plot(t,sqr)
+hold off
+
+%% Triangle Wave
+figure(2)
+
+% // n = 3 //
+tri = 1/2;
+m = 3;
+for n=-m:2:m
+    C = (-2)*(1/(pi*n)^2);
+    tri = tri + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,1)
+hold on
+title('Triangle wave n = 3')
+plot(t,tri)
+hold off
+
+% // n = 9 //
+tri = 1/2;
+m = 9;
+for n=-m:2:m
+    C = (-2)*(1/(pi*n)^2);
+    tri = tri + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,2)
+hold on
+title('Triangle wave n = 9')
+plot(t,tri)
+hold off
+
+% // n = 101 //
+tri = 1/2;
+m = 101;
+for n=-m:2:m
+    C = (-2)*(1/(pi*n)^2);
+    tri = tri + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,3)
+hold on
+title('Triangle wave n = 101')
+plot(t,tri)
+hold off
+
+%% Saw Tooth Wave
+figure(3)
+
+% // n = 3 //
+saw = 1/2;
+m = 3;
+for n=-m:1:m
+    C = (1i)*(1/(2*pi*n));
+    saw = saw + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,1)
+hold on
+title('Saw Tooth wave n = 3')
+plot(t,saw)
+hold off
+
+% // n = 3 //
+saw = 1/2;
+m = 9;
+for n=-m:1:m
+    C = (1i)*(1/(2*pi*n));
+    saw = saw + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,2)
+hold on
+title('Saw Tooth wave n = 9')
+plot(t,saw)
+hold off
+
+% // n = 101 //
+saw = 1/2;
+m = 101;
+for n=-m:1:m
+    C = (1i)*(1/(2*pi*n));
+    saw = saw + C*exp(1i*2*pi*n*t*1/8);
+end
+subplot(3,1,3)
+hold on
+title('Saw Tooth wave n = 101')
+plot(t,saw)
+hold off
+
+##### SOURCE END #####
+--></body></html>
